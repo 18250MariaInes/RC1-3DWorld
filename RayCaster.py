@@ -11,7 +11,7 @@ from math import cos, sin, pi
 
 BLACK = (0,0,0)
 WHITE = (255,255,255)
-BACKGROUND = (64,64,64)
+BACKGROUND = (62,3,4)
 
 colors = {
     '1' : (221,0,20),
@@ -99,7 +99,7 @@ class Raycaster(object):
 
             x = halfWidth + i 
 
-            # perceivedHeight = screenHeight / (distance * cos( rayAngle - viewAngle) * wallHeight----- Formula para el alto de las paredes
+            # perceivedHeight = screenHeight / (distance * cos( rayAngle - viewAngle) * wallHeight ----- Formula para el alto de las paredes
             h = self.height / (dist * cos( (angle - self.player['angle']) * pi / 180 )) * self.wallHeight
 
             start = int( halfHeight - h/2)

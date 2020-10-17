@@ -1,5 +1,12 @@
-import pygame
+"""
+Maria Ines Vasquez Figueroa
+18250
+Gráficas
+RC1 3D World
+Main
+"""
 
+import pygame
 from math import cos, sin, pi
 
 BLACK = (0,0,0)
@@ -7,9 +14,9 @@ WHITE = (255,255,255)
 BACKGROUND = (64,64,64)
 
 colors = {
-    '1' : (255,165,0),
-    '2' : (0, 64, 255),
-    '3' : (0, 255, 64)
+    '1' : (221,0,20),
+    '2' : (255, 48, 28),
+    '3' : (149, 0, 22)
     }
 
 class Raycaster(object):
@@ -34,20 +41,24 @@ class Raycaster(object):
 
     def setColor(self, color):
         self.blockColor = color
-
+    
+    #carga del mapa del nivel
     def load_map(self, filename):
         with open(filename) as f:
             for line in f.readlines():
                 self.map.append(list(line))
 
+    #se dibujan los muros del nivel
     def drawRect(self, x, y, color = WHITE):
         rect = (x, y, self.blocksize, self.blocksize)
         self.screen.fill(color, rect)
 
+    #se dibuja el jugador que se mueve en el nivel
     def drawPlayerIcon(self,color):
         rect = (self.player['x'] - 2, self.player['y'] - 2, 5, 5)
         self.screen.fill(color, rect)
 
+    #Los rayos de vista del jugador son calculados
     def castRay(self, a):
         rads = a * pi / 180
         dist = 0
@@ -65,6 +76,7 @@ class Raycaster(object):
 
             dist += 5
 
+    #función para renderizar el juego
     def render(self):
 
         halfWidth = int(self.width / 2)
@@ -87,7 +99,7 @@ class Raycaster(object):
 
             x = halfWidth + i 
 
-            # perceivedHeight = screenHeight / (distance * cos( rayAngle - viewAngle) * wallHeight
+            # perceivedHeight = screenHeight / (distance * cos( rayAngle - viewAngle) * wallHeight----- Formula para el alto de las paredes
             h = self.height / (dist * cos( (angle - self.player['angle']) * pi / 180 )) * self.wallHeight
 
             start = int( halfHeight - h/2)
@@ -105,11 +117,13 @@ class Raycaster(object):
 
 
 pygame.init()
-screen = pygame.display.set_mode((1000,500)) #, pygame.FULLSCREEN)
+#Set de tamaño de la pantalla
+screen = pygame.display.set_mode((1000,500)) 
 
 r = Raycaster(screen)
 
 r.setColor( (128,0,0) )
+#se carga el mapa del nivel del juego en base al .txt
 r.load_map('map.txt')
 
 isRunning = True
@@ -119,20 +133,21 @@ while isRunning:
     for ev in pygame.event.get():
         if ev.type == pygame.QUIT:
             isRunning = False
-
+        #programación de los inputs que acepta el sistema. Usa UP para ir adelante, DOWN para ir ára atrás, LEFT para ir a la izquiera, 
+        #RIGHT para ir a la derecha, Q para girar a la izquierda y E para girar a la derecha
         if ev.type == pygame.KEYDOWN:
             if ev.key == pygame.K_ESCAPE:
                 isRunning = False
-            elif ev.key == pygame.K_w:
+            elif ev.key == pygame.K_UP:
                 r.player['x'] += cos(r.player['angle'] * pi / 180) * r.stepSize
                 r.player['y'] += sin(r.player['angle'] * pi / 180) * r.stepSize
-            elif ev.key == pygame.K_s:
+            elif ev.key == pygame.K_DOWN :
                 r.player['x'] -= cos(r.player['angle'] * pi / 180) * r.stepSize
                 r.player['y'] -= sin(r.player['angle'] * pi / 180) * r.stepSize
-            elif ev.key == pygame.K_a:
+            elif ev.key == pygame.K_LEFT:
                 r.player['x'] -= cos((r.player['angle'] + 90) * pi / 180) * r.stepSize
                 r.player['y'] -= sin((r.player['angle'] + 90) * pi / 180) * r.stepSize
-            elif ev.key == pygame.K_d:
+            elif ev.key == pygame.K_RIGHT:
                 r.player['x'] += cos((r.player['angle'] + 90) * pi / 180) * r.stepSize
                 r.player['y'] += sin((r.player['angle'] + 90) * pi / 180) * r.stepSize
             elif ev.key == pygame.K_q:
